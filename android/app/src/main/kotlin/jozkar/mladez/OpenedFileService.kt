@@ -44,18 +44,26 @@ object OpenedFileService {
         val uri = intent.data
 
         if (uri != null) {
-            val reader = BufferedReader(InputStreamReader(context.getContentResolver().openInputStream(uri)))
-            val stringBuilder = StringBuilder()
-            var line: String? = reader.readLine()
+            var reader: BufferedReader? = null
 
-            while (line != null) {
-                stringBuilder.append(line)
-                line = reader.readLine()
+            try {
+                reader = BufferedReader(InputStreamReader(context.getContentResolver().openInputStream(uri)))
+                val stringBuilder = StringBuilder()
+                var line: String? = reader.readLine()
+
+                while (line != null) {
+                    stringBuilder.append(line)
+                    line = reader.readLine()
+                }
+
+                reader.close()
+
+                return stringBuilder.toString()
+            } catch (e: Exception) {
+                reader?.close()
+
+                return null
             }
-
-            reader.close()
-
-            return stringBuilder.toString()
         }
 
         return null
