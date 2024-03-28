@@ -105,7 +105,7 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
           matchedBySongbookNumber.add(songLyric);
         } else {
           Sentry.captureMessage(
-            'missing song lyric from songbook record with id: ${songbookRecord.songLyric.targetId}',
+            'missing song lyric from songbook record with id: $songbookRecord',
           );
         }
       }

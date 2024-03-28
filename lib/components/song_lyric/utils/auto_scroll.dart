@@ -28,6 +28,8 @@ class AutoScrollController extends ScrollController {
   }
 
   void _start(int msPerPixel) async {
+    if (!hasClients) return;
+
     final scrollFuture = animateTo(
       position.maxScrollExtent,
       duration: Duration(milliseconds: msPerPixel * (position.maxScrollExtent - offset).round()),

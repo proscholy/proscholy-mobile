@@ -249,14 +249,17 @@ class Playlists extends _$Playlists {
     _playlistRecordsBox.removeMany(playlistToRemove.records.map((playlistRecord) => playlistRecord.id).toList());
     _playlistsBox.remove(playlistToRemove.id);
 
-    _customTextBox.removeMany(playlistToRemove.records
-        .map((playlistRecord) => playlistRecord.customText.targetId)
-        .where((id) => id != 0)
-        .toList());
-    _bibleVerseBox.removeMany(playlistToRemove.records
-        .map((playlistRecord) => playlistRecord.bibleVerse.targetId)
-        .where((id) => id != 0)
-        .toList());
+    // delete this with delay, so it does not lead to exceptions when poping from playlist screen
+    Future.delayed(const Duration(seconds: 1), () {
+      _customTextBox.removeMany(playlistToRemove.records
+          .map((playlistRecord) => playlistRecord.customText.targetId)
+          .where((id) => id != 0)
+          .toList());
+      _bibleVerseBox.removeMany(playlistToRemove.records
+          .map((playlistRecord) => playlistRecord.bibleVerse.targetId)
+          .where((id) => id != 0)
+          .toList());
+    });
   }
 
   void addToPlaylist(
