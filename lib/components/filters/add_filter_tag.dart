@@ -42,8 +42,6 @@ class AddFilterTag extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
     showModalBottomSheet(
       context: context,
       builder: (context) => SizedBox(

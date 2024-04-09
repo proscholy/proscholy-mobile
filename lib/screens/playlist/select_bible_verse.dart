@@ -208,7 +208,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: FocusScope.of(context).unfocus,
+      onTap: FocusManager.instance.primaryFocus?.unfocus,
       child: SafeAreaWrapper(
         child: Scaffold(
           appBar: AppBar(

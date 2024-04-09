@@ -101,7 +101,7 @@ class _SearchFieldState extends State<SearchField> {
     }
 
     // autofocus on search screen
-    Future.delayed(const Duration(milliseconds: 10), () => _requestFocusAfterTransition());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _requestFocusAfterTransition());
   }
 
   @override
@@ -124,68 +124,62 @@ class _SearchFieldState extends State<SearchField> {
       );
     }
 
-    return Hero(
-      tag: 'search',
-      flightShuttleBuilder: MediaQuery.of(context).isTablet
-          ? null
-          : (_, animation, __, ___, ____) => SearchFieldTransitionWidget(animation: animation),
-      child: Container(
-        padding: !context.isHome
-            ? EdgeInsets.only(left: kDefaultPadding, right: context.isSearching ? 0 : kDefaultPadding)
-            : null,
-        child: Material(
-          type: MaterialType.transparency,
-          child: Row(
-            children: [
-              Expanded(
-                child: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: _controller,
-                  builder: (_, value, __) => TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Název, číslo nebo část textu',
-                      hintStyle: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: theme.brightness.isLight ? lightIconColor : darkIconColor,
-                      ),
-                      filled: true,
-                      fillColor: theme.brightness.isLight && !context.isHome
-                          ? theme.scaffoldBackgroundColor
-                          : theme.colorScheme.surface,
-                      isDense: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(kDefaultRadius),
-                      ),
-                      prefixIcon: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                        child: Icon(Icons.search, color: theme.iconTheme.color),
-                      ),
-                      prefixIconConstraints: const BoxConstraints(),
-                      suffixIcon: value.text.isEmpty ? null : suffixIcon,
-                      suffixIconConstraints: const BoxConstraints(),
-                      contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+    return Container(
+      padding: !context.isHome
+          ? EdgeInsets.only(left: kDefaultPadding, right: context.isSearching ? 0 : kDefaultPadding)
+          : null,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Row(
+          children: [
+            Expanded(
+              child: ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _controller,
+                builder: (_, value, __) => TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Název, číslo nebo část textu',
+                    hintStyle: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: theme.brightness.isLight ? lightIconColor : darkIconColor,
                     ),
-                    // disable pasting to search field on home screen, as it should only open search screen
-                    enableInteractiveSelection: !context.isHome,
-                    onTap: context.isHome ? _showSearchScreen : null,
-                    onChanged: widget.onChanged,
-                    onSubmitted: widget.onSubmitted,
-                    controller: _controller,
-                    focusNode: _focusNode,
+                    filled: true,
+                    fillColor: theme.brightness.isLight && !context.isHome
+                        ? theme.scaffoldBackgroundColor
+                        : theme.colorScheme.surface,
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(kDefaultRadius),
+                    ),
+                    prefixIcon: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                      child: Icon(Icons.search, color: theme.iconTheme.color),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(),
+                    suffixIcon: value.text.isEmpty ? null : suffixIcon,
+                    suffixIconConstraints: const BoxConstraints(),
+                    contentPadding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
                   ),
+                  // disable pasting to search field on home screen, as it should only open search screen
+                  enableInteractiveSelection: !context.isHome,
+                  onTap: context.isHome ? _showSearchScreen : null,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
+                  controller: _controller,
+                  focusNode: _focusNode,
                 ),
               ),
-              if (context.isSearching)
-                Highlightable(
-                  onTap: () => context.maybePop(),
-                  padding: const EdgeInsets.all(kDefaultPadding),
-                  textStyle: theme.textTheme.bodyMedium,
-                  foregroundColor: theme.colorScheme.primary,
-                  child: const Text('Zrušit'),
-                ),
-            ],
-          ),
+            ),
+            if (context.isSearching)
+              Highlightable(
+                onTap: () => context.maybePop(),
+                padding: const EdgeInsets.all(kDefaultPadding),
+                textStyle: theme.textTheme.bodyMedium,
+                foregroundColor: theme.colorScheme.primary,
+                child: const Text('Zrušit'),
+              ),
+          ],
         ),
       ),
     );
@@ -193,7 +187,7 @@ class _SearchFieldState extends State<SearchField> {
 
   void _showSearchScreen() {
     // prevent keyboard from showing up
-    FocusScope.of(context).requestFocus(FocusNode());
+    _focusNode.unfocus();
 
     context.push('/search');
   }
@@ -209,9 +203,10 @@ class _SearchFieldState extends State<SearchField> {
 
     final animation = ModalRoute.of(context)?.animation;
 
-    void handler(status) {
+    void handler(AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 10), () => FocusScope.of(context).requestFocus(_focusNode));
+        // TODO: why is it needed with delay?
+        Future.delayed(const Duration(milliseconds: 10), () => _focusNode.requestFocus());
 
         animation?.removeStatusListener(handler);
       }

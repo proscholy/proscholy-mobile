@@ -51,99 +51,109 @@ class SearchSongLyricsListView extends ConsumerWidget {
 
     return SafeArea(
       bottom: false,
-      child: ListView.builder(
-        key: Key('${ref.read(searchTextProvider)}_${ref.read(selectedTagsProvider).length}'),
-        padding: const EdgeInsets.only(top: kDefaultPadding / 3),
-        primary: false,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        itemCount: itemCount,
-        itemBuilder: (_, index) {
-          if (showRecentSongLyrics) {
-            if (index == 0) {
-              return const Padding(
-                padding: EdgeInsets.only(top: kDefaultPadding),
-                child: SongLyricsSectionTitle(title: 'Poslední písně'),
-              );
-            }
+      child: NotificationListener<ScrollUpdateNotification>(
+        onNotification: (ScrollUpdateNotification notification) {
+          if (notification.dragDetails != null) FocusManager.instance.primaryFocus?.unfocus();
 
-            index -= 1;
-
-            if (index < recentSongLyrics.length) {
-              return SongLyricRow(
-                songLyric: recentSongLyrics[index],
-                displayScreenArguments: DisplayScreenArguments(
-                  items: recentSongLyrics,
-                  initialIndex: index,
-                  showSearchScreen: true,
-                  playlist: playlist,
-                ),
-              );
-            }
-
-            index -= recentSongLyrics.length;
-          }
-
-          if (matchedById != null) {
-            if (index == 0) return SongLyricRow(songLyric: matchedById);
-
-            index -= 1;
-          }
-
-          if (matchedBySongbookNumber.isNotEmpty) {
-            if (index == 0) {
-              return Padding(
-                padding: const EdgeInsets.only(top: kDefaultPadding),
-                child: SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících'),
-              );
-            }
-
-            index -= 1;
-
-            if (index < matchedBySongbookNumber.length) {
-              return SongLyricRow(
-                songLyric: matchedBySongbookNumber[index],
-                displayScreenArguments: DisplayScreenArguments(
-                  items: matchedBySongbookNumber,
-                  initialIndex: index,
-                  showSearchScreen: true,
-                  playlist: playlist,
-                ),
-              );
-            }
-
-            index -= matchedBySongbookNumber.length;
-          }
-
-          if (showRecentSongLyrics) {
-            if (index == 0) {
-              return const Padding(
-                padding: EdgeInsets.only(top: kDefaultPadding),
-                child: SongLyricsSectionTitle(title: 'Všechny písně'),
-              );
-            }
-
-            index -= 1;
-          } else if (hasMatchedResults) {
-            if (index == 0) {
-              return const Padding(
-                padding: EdgeInsets.only(top: kDefaultPadding),
-                child: SongLyricsSectionTitle(title: 'Ostatní výsledky'),
-              );
-            }
-
-            index -= 1;
-          }
-
-          return SongLyricRow(
-            songLyric: songLyrics[index],
-            displayScreenArguments: DisplayScreenArguments(
-              items: songLyrics,
-              initialIndex: index,
-              showSearchScreen: true,
-              playlist: playlist,
-            ),
-          );
+          return false;
         },
+        child: ListView.builder(
+          key: Key('${ref.read(searchTextProvider)}_${ref.read(selectedTagsProvider).length}'),
+          padding: const EdgeInsets.only(top: kDefaultPadding / 3),
+          primary: false,
+          // TODO: right now this opens keyboard again after pop, see: https://github.com/flutter/flutter/issues/124778
+          // using `NotificationListener` to do same functionality
+          // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          itemCount: itemCount,
+          itemBuilder: (_, index) {
+            if (showRecentSongLyrics) {
+              if (index == 0) {
+                return const Padding(
+                  padding: EdgeInsets.only(top: kDefaultPadding),
+                  child: SongLyricsSectionTitle(title: 'Poslední písně'),
+                );
+              }
+
+              index -= 1;
+
+              if (index < recentSongLyrics.length) {
+                return SongLyricRow(
+                  songLyric: recentSongLyrics[index],
+                  displayScreenArguments: DisplayScreenArguments(
+                    items: recentSongLyrics,
+                    initialIndex: index,
+                    showSearchScreen: true,
+                    playlist: playlist,
+                  ),
+                );
+              }
+
+              index -= recentSongLyrics.length;
+            }
+
+            if (matchedById != null) {
+              if (index == 0) return SongLyricRow(songLyric: matchedById);
+
+              index -= 1;
+            }
+
+            if (matchedBySongbookNumber.isNotEmpty) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: kDefaultPadding),
+                  child:
+                      SongLyricsSectionTitle(title: 'Číslo ${searchedSongLyricsResult.searchedNumber} ve zpěvnících'),
+                );
+              }
+
+              index -= 1;
+
+              if (index < matchedBySongbookNumber.length) {
+                return SongLyricRow(
+                  songLyric: matchedBySongbookNumber[index],
+                  displayScreenArguments: DisplayScreenArguments(
+                    items: matchedBySongbookNumber,
+                    initialIndex: index,
+                    showSearchScreen: true,
+                    playlist: playlist,
+                  ),
+                );
+              }
+
+              index -= matchedBySongbookNumber.length;
+            }
+
+            if (showRecentSongLyrics) {
+              if (index == 0) {
+                return const Padding(
+                  padding: EdgeInsets.only(top: kDefaultPadding),
+                  child: SongLyricsSectionTitle(title: 'Všechny písně'),
+                );
+              }
+
+              index -= 1;
+            } else if (hasMatchedResults) {
+              if (index == 0) {
+                return const Padding(
+                  padding: EdgeInsets.only(top: kDefaultPadding),
+                  child: SongLyricsSectionTitle(title: 'Ostatní výsledky'),
+                );
+              }
+
+              index -= 1;
+            }
+
+            return SongLyricRow(
+              songLyric: songLyrics[index],
+              displayScreenArguments: DisplayScreenArguments(
+                items: songLyrics,
+                initialIndex: index,
+                showSearchScreen: true,
+                playlist: playlist,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

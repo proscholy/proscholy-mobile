@@ -80,8 +80,6 @@ class SongbookTile extends StatelessWidget {
   }
 
   void _pushSongbook(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
     context.push('/songbook', arguments: songbook);
   }
 }
