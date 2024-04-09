@@ -2,6 +2,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zpevnik/constants.dart';
 
+final ColorScheme lightColorScheme = ColorScheme(
+  brightness: Brightness.light,
+  primary: Color(0xff6f43c0),
+  onPrimary: Color(0xffffffff),
+  secondary: Color(0xff635b70),
+  onSecondary: Color(0xffffffff),
+  error: Color(0xffba1a1a),
+  onError: Color(0xffffffff),
+  background: Color(0xfff2f1f6),
+  onBackground: Color(0xff1d1b1e),
+  surface: Color(0xfffffbff),
+  onSurface: Color(0xff1d1b1e),
+);
+
+final ColorScheme darkColorScheme = ColorScheme(
+  brightness: Brightness.dark,
+  primary: Color(0xff6f43c0),
+  onPrimary: Color(0xff3f008d),
+  secondary: Color(0xffcdc2db),
+  onSecondary: Color(0xff342d40),
+  error: Color(0xffffb4ab),
+  onError: Color(0xff690005),
+  background: Color(0xff000000),
+  onBackground: Color(0xffe6e1e6),
+  surface: Color(0xff1d1b1e),
+  onSurface: Color(0xffe6e1e6),
+);
+
 const Color lightBackgroundColor = Color(0xfff2f1f6);
 const Color darkBackgroundColor = Color(0xff000000);
 
@@ -32,7 +60,7 @@ class AppTheme {
 
     return ThemeData(
       brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(seedColor: seedColor, background: lightBackgroundColor),
+      colorScheme: lightColorScheme,
       scaffoldBackgroundColor: Colors.white,
       appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,
@@ -66,11 +94,7 @@ class AppTheme {
 
     return ThemeData(
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: seedColor,
-        brightness: Brightness.dark,
-        background: darkBackgroundColor,
-      ),
+      colorScheme: darkColorScheme,
       scaffoldBackgroundColor: darkBackgroundColor,
       appBarTheme: const AppBarTheme(
         iconTheme: iconTheme,
