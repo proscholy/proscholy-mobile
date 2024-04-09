@@ -246,7 +246,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           children: [
                             TextSpan(text: 'Český ekumenický překlad', style: boldStyle),
                             TextSpan(
-                              text: ', který je získáván prostřednictím volně dostupné API od$unbreakableSpace',
+                              text: ', který je získáván prostřednictím volně dostupného rozhraní od$unbreakableSpace',
                               style: textStyle,
                             ),
                             TextSpan(
@@ -275,7 +275,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           keyboardType: TextInputType.number,
                           onChanged: (value) => setState(() => _startVerse = int.tryParse(value) ?? 1),
                           decoration: InputDecoration(
-                            labelText: 'Číslo verše',
+                            labelText: 'Počáteční verš',
                             labelStyle:
                                 startVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
                             border: startVerseBorder,
@@ -290,7 +290,7 @@ class _SelectBibleVerseScreenState extends State<_SelectBibleVerseScreen> {
                           keyboardType: TextInputType.number,
                           onChanged: (value) => setState(() => _endVerse = int.tryParse(value)),
                           decoration: InputDecoration(
-                            labelText: 'Konečný verše',
+                            labelText: 'Koncový verš',
                             labelStyle:
                                 endVerseInvalid ? theme.textTheme.labelLarge?.copyWith(color: Colors.red) : null,
                             border: endVerseBorder,
