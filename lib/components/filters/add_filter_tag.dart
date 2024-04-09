@@ -1,6 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:zpevnik/components/filters/filters.dart';
 import 'package:zpevnik/components/highlightable.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/utils/extensions.dart';
@@ -8,7 +7,9 @@ import 'package:zpevnik/utils/extensions.dart';
 const double _addFilterRadius = 7;
 
 class AddFilterTag extends StatelessWidget {
-  const AddFilterTag({super.key});
+  final Function() onTap;
+
+  const AddFilterTag({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class AddFilterTag extends StatelessWidget {
         child: Highlightable(
           highlightBackground: true,
           borderRadius: BorderRadius.circular(_addFilterRadius),
-          onTap: () => _showFilters(context),
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(kDefaultPadding / 2),
             child: Row(children: [
@@ -38,17 +39,6 @@ class AddFilterTag extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _showFilters(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SizedBox(
-        height: 2 / 3 * MediaQuery.sizeOf(context).height,
-        child: const FiltersWidget(),
-      ),
-      routeSettings: const RouteSettings(name: '/filters'),
     );
   }
 }
