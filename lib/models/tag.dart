@@ -149,6 +149,7 @@ class Tag with _$Tag implements Identifiable {
     @Id(assignable: true) @JsonKey(fromJson: int.parse) required int id,
     required String name,
     @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString) required int dbType,
+    required int songLyricsCount,
   }) = _Tag;
 
   factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);

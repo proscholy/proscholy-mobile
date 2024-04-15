@@ -151,7 +151,7 @@ class _TagProviderElement extends AutoDisposeProviderElement<Tag?> with TagRef {
   int get id => (origin as TagProvider).id;
 }
 
-String _$tagsHash() => r'074b72e023b471447eb00d117361b526195381af';
+String _$tagsHash() => r'122ab1c1801b1bdbfef67e404e58ea86f31304ba';
 
 /// See also [tags].
 @ProviderFor(tags)

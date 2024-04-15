@@ -26,6 +26,7 @@ mixin _$Tag {
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
   int get dbType => throw _privateConstructorUsedError;
+  int get songLyricsCount => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TagCopyWith<Tag> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +41,8 @@ abstract class $TagCopyWith<$Res> {
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      int dbType});
+      int dbType,
+      int songLyricsCount});
 }
 
 /// @nodoc
@@ -58,6 +60,7 @@ class _$TagCopyWithImpl<$Res, $Val extends Tag> implements $TagCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? dbType = null,
+    Object? songLyricsCount = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -71,6 +74,10 @@ class _$TagCopyWithImpl<$Res, $Val extends Tag> implements $TagCopyWith<$Res> {
       dbType: null == dbType
           ? _value.dbType
           : dbType // ignore: cast_nullable_to_non_nullable
+              as int,
+      songLyricsCount: null == songLyricsCount
+          ? _value.songLyricsCount
+          : songLyricsCount // ignore: cast_nullable_to_non_nullable
               as int,
     ) as $Val);
   }
@@ -86,7 +93,8 @@ abstract class _$$TagImplCopyWith<$Res> implements $TagCopyWith<$Res> {
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) int id,
       String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      int dbType});
+      int dbType,
+      int songLyricsCount});
 }
 
 /// @nodoc
@@ -101,6 +109,7 @@ class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
     Object? id = null,
     Object? name = null,
     Object? dbType = null,
+    Object? songLyricsCount = null,
   }) {
     return _then(_$TagImpl(
       id: null == id
@@ -115,6 +124,10 @@ class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
           ? _value.dbType
           : dbType // ignore: cast_nullable_to_non_nullable
               as int,
+      songLyricsCount: null == songLyricsCount
+          ? _value.songLyricsCount
+          : songLyricsCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -128,7 +141,8 @@ class _$TagImpl extends _Tag {
       {@Id(assignable: true) @JsonKey(fromJson: int.parse) required this.id,
       required this.name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      required this.dbType})
+      required this.dbType,
+      required this.songLyricsCount})
       : super._();
 
   factory _$TagImpl.fromJson(Map<String, dynamic> json) =>
@@ -143,10 +157,12 @@ class _$TagImpl extends _Tag {
   @override
   @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
   final int dbType;
+  @override
+  final int songLyricsCount;
 
   @override
   String toString() {
-    return 'Tag(id: $id, name: $name, dbType: $dbType)';
+    return 'Tag(id: $id, name: $name, dbType: $dbType, songLyricsCount: $songLyricsCount)';
   }
 
   @JsonKey(ignore: true)
@@ -163,7 +179,8 @@ abstract class _Tag extends Tag {
       required final int id,
       required final String name,
       @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
-      required final int dbType}) = _$TagImpl;
+      required final int dbType,
+      required final int songLyricsCount}) = _$TagImpl;
   const _Tag._() : super._();
 
   factory _Tag.fromJson(Map<String, dynamic> json) = _$TagImpl.fromJson;
@@ -177,6 +194,8 @@ abstract class _Tag extends Tag {
   @override
   @JsonKey(name: 'type_enum', fromJson: TagType.rawValueFromString)
   int get dbType;
+  @override
+  int get songLyricsCount;
   @override
   @JsonKey(ignore: true)
   _$$TagImplCopyWith<_$TagImpl> get copyWith =>

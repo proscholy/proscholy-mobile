@@ -49,9 +49,15 @@ List<Tag> tags(TagsRef ref, TagType tagType) {
 
       int id = -1;
 
-      return [for (final language in languages) Tag(id: id--, name: language, dbType: tagType.rawValue)];
+      return [
+        for (final language in languages)
+          Tag(id: id--, name: language, dbType: tagType.rawValue, songLyricsCount: languageCounts[language]!)
+      ];
     default:
-      final tags = queryStore(ref, condition: Tag_.dbType.equals(tagType.rawValue));
+      final tags = queryStore(
+        ref,
+        condition: Tag_.dbType.equals(tagType.rawValue).and(Tag_.songLyricsCount.greaterThan(0)),
+      );
 
       return tags;
   }

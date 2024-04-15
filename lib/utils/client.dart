@@ -43,6 +43,7 @@ query {
     id
     name
     type_enum
+    song_lyrics_count
   }
 }''';
 

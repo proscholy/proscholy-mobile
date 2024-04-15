@@ -34,7 +34,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(4, 6296825599350518621),
       name: 'Tag',
-      lastPropertyId: const IdUid(3, 4931525366191811462),
+      lastPropertyId: const IdUid(4, 8038639158976530849),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -50,6 +50,11 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(3, 4931525366191811462),
             name: 'dbType',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 8038639158976530849),
+            name: 'songLyricsCount',
             type: 6,
             flags: 0)
       ],
@@ -687,10 +692,11 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Tag object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(4);
+          fbb.startTable(5);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addInt64(2, object.dbType);
+          fbb.addInt64(3, object.songLyricsCount);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -703,7 +709,13 @@ ModelDefinition getObjectBoxModel() {
               .vTableGet(buffer, rootOffset, 6, '');
           final dbTypeParam =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0);
-          final object = Tag(id: idParam, name: nameParam, dbType: dbTypeParam);
+          final songLyricsCountParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+          final object = Tag(
+              id: idParam,
+              name: nameParam,
+              dbType: dbTypeParam,
+              songLyricsCount: songLyricsCountParam);
 
           return object;
         }),
@@ -1412,6 +1424,10 @@ class Tag_ {
 
   /// see [Tag.dbType]
   static final dbType = QueryIntegerProperty<Tag>(_entities[0].properties[2]);
+
+  /// see [Tag.songLyricsCount]
+  static final songLyricsCount =
+      QueryIntegerProperty<Tag>(_entities[0].properties[3]);
 }
 
 /// [Song] entity fields to define ObjectBox queries.

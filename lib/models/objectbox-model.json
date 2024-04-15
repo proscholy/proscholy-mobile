@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "4:6296825599350518621",
-      "lastPropertyId": "3:4931525366191811462",
+      "lastPropertyId": "4:8038639158976530849",
       "name": "Tag",
       "properties": [
         {
@@ -22,6 +22,11 @@
         {
           "id": "3:4931525366191811462",
           "name": "dbType",
+          "type": 6
+        },
+        {
+          "id": "4:8038639158976530849",
+          "name": "songLyricsCount",
           "type": 6
         }
       ],

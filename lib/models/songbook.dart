@@ -34,7 +34,12 @@ class Songbook with _$Songbook implements Comparable<Songbook>, Identifiable, So
 
   factory Songbook.fromJson(Map<String, Object?> json) => _$SongbookFromJson(json);
 
-  Tag get tag => Tag(id: id + _songbookIdOffset, name: name, dbType: TagType.songbook.rawValue);
+  Tag get tag => Tag(
+        id: id + _songbookIdOffset,
+        name: name,
+        dbType: TagType.songbook.rawValue,
+        songLyricsCount: records.length,
+      );
 
   @override
   int compareTo(Songbook other) {

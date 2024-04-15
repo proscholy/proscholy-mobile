@@ -31,7 +31,12 @@ class Playlist with _$Playlist implements Identifiable, RecentItem, SongsList {
         records: ToMany(),
       );
 
-  Tag get tag => Tag(id: id + playlistIdOffset, name: name, dbType: TagType.playlist.rawValue);
+  Tag get tag => Tag(
+        id: id + playlistIdOffset,
+        name: name,
+        dbType: TagType.playlist.rawValue,
+        songLyricsCount: records.length,
+      );
 
   bool get isFavorites => id == favoritesPlaylistId;
 

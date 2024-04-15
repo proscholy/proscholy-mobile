@@ -163,7 +163,7 @@ ToMany<Author> _authorsFromJson(List<dynamic> jsonList) {
 }
 
 ToMany<Tag> _tagsFromJson(List<dynamic> jsonList) {
-  final tags = [for (final json in jsonList) Tag(id: int.parse(json['id']), name: '', dbType: 0)];
+  final tags = [for (final json in jsonList) Tag(id: int.parse(json['id']), name: '', dbType: 0, songLyricsCount: 0)];
 
   return ToMany(items: tags);
 }

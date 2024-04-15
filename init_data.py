@@ -16,6 +16,7 @@ all_data = {
             id
             name
             type_enum
+            song_lyrics_count
         }
         songbooks {
             id
