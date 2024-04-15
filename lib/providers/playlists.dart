@@ -267,7 +267,7 @@ class Playlists extends _$Playlists {
     SongLyric? songLyric,
     CustomText? customText,
     BibleVerse? bibleVerse,
-    int? nextRank,
+    int? afterRank,
   }) {
     // prevent duplicates
     if (playlist.records.any((playlistRecord) =>
@@ -281,7 +281,7 @@ class Playlists extends _$Playlists {
     queryBuilder.order(PlaylistRecord_.rank, flags: Order.descending);
 
     final query = queryBuilder.build();
-    final lastRank = query.findFirst()?.rank ?? -1;
+    final lastRank = afterRank ?? query.findFirst()?.rank ?? -1;
 
     query.close();
 
@@ -294,9 +294,22 @@ class Playlists extends _$Playlists {
       playlist: ToOne(target: playlist),
     );
 
-    _playlistRecordsBox.put(playlistRecord);
+    if (afterRank != null) {
+      playlist.records.insert(afterRank + 1, playlistRecord);
 
-    playlist.records.add(playlistRecord);
+      final playlistRecords =
+          playlist.records.mapIndexed((i, playlistRecord) => playlistRecord.copyWith(rank: i)).toList();
+
+      playlist.records.clear();
+      playlist.records.addAll(playlistRecords);
+
+      _playlistRecordsBox.putMany(playlistRecords);
+    } else {
+      _playlistRecordsBox.put(playlistRecord);
+
+      playlist.records.add(playlistRecord);
+    }
+
     songLyric?.playlistRecords.add(playlistRecord);
   }
 

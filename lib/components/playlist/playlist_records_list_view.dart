@@ -48,8 +48,35 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .box<PlaylistRecord>()
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
-        .listen((_) =>
-            setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
+        .listen((_) {
+      setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+
+      final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+
+      if (selectedDisplayableItemArgumentsNotifier != null) {
+        final displayableItems = _recordsOrdered.map(_unwrapPlaylistRecord).toList();
+
+        for (int i = 0; i < displayableItems.length; i++) {
+          if (displayableItems[i] ==
+              selectedDisplayableItemArgumentsNotifier
+                  .value.items[selectedDisplayableItemArgumentsNotifier.value.initialIndex]) {
+            selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
+              items: displayableItems,
+              initialIndex: i,
+              playlist: widget.playlist,
+            );
+
+            return;
+          }
+        }
+
+        selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
+          items: displayableItems,
+          initialIndex: 0,
+          playlist: widget.playlist,
+        );
+      }
+    });
 
     widget.sortedAlphabeticallyNotifier.addListener(_sortedAlphabeticallyChanged);
   }

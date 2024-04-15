@@ -151,7 +151,13 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
       if (newItems.hashCode != _items.hashCode) {
         setState(() => _items = newItems);
 
-        _controller.jumpToPage(newIndex + 100 * newItems.length);
+        if (newItems.length > 1) {
+          // do this with delay, because if previous `_items` contained only one item `_controller` won't be attached until redraw
+          Future.delayed(
+            const Duration(milliseconds: 100),
+            () => _controller.jumpToPage(newIndex + 100 * newItems.length),
+          );
+        }
         _itemChanged(newIndex);
       } else if (newIndex != _currentIndex % _items.length) {
         _controller.jumpToPage(newIndex + 100 * _items.length);
