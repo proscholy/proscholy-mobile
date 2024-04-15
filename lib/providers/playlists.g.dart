@@ -169,7 +169,7 @@ final favoritePlaylistProvider = Provider<Playlist>.internal(
 );
 
 typedef FavoritePlaylistRef = ProviderRef<Playlist>;
-String _$playlistsHash() => r'c8a57318c26e3549d744e3f20228c587006eab77';
+String _$playlistsHash() => r'9d5813833e0b82f99afcc937a4ceacf4d12311c8';
 
 /// See also [Playlists].
 @ProviderFor(Playlists)

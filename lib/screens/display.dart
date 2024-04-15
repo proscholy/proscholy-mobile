@@ -9,7 +9,7 @@ import 'package:zpevnik/components/playlist/bible_verse.dart';
 import 'package:zpevnik/components/playlist/custom_text.dart';
 import 'package:zpevnik/components/playlist/playlists_sheet.dart';
 import 'package:zpevnik/components/presentation/presentation.dart';
-import 'package:zpevnik/components/selected_displayable_item_index.dart';
+import 'package:zpevnik/components/selected_displayable_item_arguments.dart';
 import 'package:zpevnik/components/presentation/settings.dart';
 import 'package:zpevnik/components/song_lyric/bottom_bar.dart';
 import 'package:zpevnik/components/song_lyric/externals/collapsed_player.dart';
@@ -93,14 +93,7 @@ class _DisplayScreenTabletState extends ConsumerState<_DisplayScreenTablet> {
       displayableItemArgumentsNotifier: _selectedDisplayableItemArgumentsNotifier,
       child: SplitView(
         showingOnlyDetail: menuCollapsed || fullScreen,
-        detail: ValueListenableBuilder(
-          valueListenable: _selectedDisplayableItemArgumentsNotifier,
-          builder: (_, arguments, __) => _DisplayScaffold(
-            key: Key('${arguments.hashCode}'),
-            items: arguments.items,
-            initialIndex: arguments.initialIndex,
-          ),
-        ),
+        detail: _DisplayScaffold(items: widget.items, initialIndex: widget.initialIndex),
         child: widget.playlist != null
             ? PlaylistScreen(playlist: widget.playlist!)
             : (widget.songbook != null ? SongbookScreen(songbook: widget.songbook!) : const SearchScreen()),
@@ -113,7 +106,7 @@ class _DisplayScaffold extends ConsumerStatefulWidget {
   final List<DisplayableItem> items;
   final int initialIndex;
 
-  const _DisplayScaffold({super.key, required this.items, required this.initialIndex});
+  const _DisplayScaffold({required this.items, required this.initialIndex});
 
   @override
   ConsumerState<_DisplayScaffold> createState() => _DisplayScaffoldState();
@@ -126,13 +119,15 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
   final _autoScrollControllers = <int, AutoScrollController>{};
 
+  late List<DisplayableItem> _items = widget.items;
+
   late int _currentIndex;
 
   late double _fontSizeScaleBeforeScale;
 
   Timer? _addRecentItemTimer;
 
-  DisplayableItem get _currentItem => widget.items[_currentIndex];
+  DisplayableItem get _currentItem => _items[_currentIndex];
 
   AutoScrollController _autoScrollController(int index) {
     return _autoScrollControllers.putIfAbsent(index, () => AutoScrollController());
@@ -146,6 +141,23 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
     // TODO: make sure this widget does not depend on `presentationProvider` and do this without delay
     Future.delayed(const Duration(milliseconds: 10), () => ref.read(presentationProvider).change(_currentItem));
+
+    final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
+
+    selectedDisplayableItemArgumentsNotifier?.addListener(() {
+      final newItems = selectedDisplayableItemArgumentsNotifier.value.items;
+      final newIndex = selectedDisplayableItemArgumentsNotifier.value.initialIndex;
+
+      if (newItems.hashCode != _items.hashCode) {
+        setState(() => _items = newItems);
+
+        _controller.jumpToPage(newIndex + 100 * newItems.length);
+        _itemChanged(newIndex);
+      } else if (newIndex != _currentIndex % _items.length) {
+        _controller.jumpToPage(newIndex + 100 * _items.length);
+        _itemChanged(newIndex);
+      }
+    });
   }
 
   @override
@@ -182,14 +194,14 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
           child: MediaQuery(
             data: newMediaQuery,
             child: PageView.builder(
-              controller: widget.items.length == 1 ? null : _controller,
+              controller: _items.length == 1 ? null : _controller,
               onPageChanged: _itemChanged,
-              itemCount: widget.items.length == 1 ? 1 : null,
+              itemCount: _items.length == 1 ? 1 : null,
               // disable scrolling when there is only one item
-              physics: widget.items.length == 1 ? const NeverScrollableScrollPhysics() : null,
+              physics: _items.length == 1 ? const NeverScrollableScrollPhysics() : null,
               itemBuilder: (_, index) {
-                index = index % widget.items.length;
-                final item = widget.items[index];
+                index = index % _items.length;
+                final item = _items[index];
 
                 if (ref.watch(presentationProvider
                     .select((presentation) => presentation.isPresenting && presentation.isPresentingLocally))) {
@@ -370,7 +382,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
   }
 
   void _itemChanged(int index) {
-    setState(() => _currentIndex = index % widget.items.length);
+    setState(() => _currentIndex = index % _items.length);
 
     // notify presentation
     ref.read(presentationProvider.notifier).change(_currentItem);
@@ -380,7 +392,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
 
     if (selectedDisplayableItemArgumentsNotifier != null) {
       selectedDisplayableItemArgumentsNotifier.value = DisplayScreenArguments(
-        items: widget.items,
+        items: _items,
         initialIndex: _currentIndex,
       );
     }
@@ -408,7 +420,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
         (await context.push('/playlist/bible_verse/select_verse', arguments: bibleVerse)) as BibleVerse?;
 
     if (editedBibleVerse != null) {
-      setState(() => widget.items[_currentIndex] = editedBibleVerse);
+      setState(() => _items[_currentIndex] = editedBibleVerse);
     }
   }
 
@@ -416,7 +428,7 @@ class _DisplayScaffoldState extends ConsumerState<_DisplayScaffold> {
     final editedCustomText = (await context.push('/playlist/custom_text/edit', arguments: customText)) as CustomText?;
 
     if (editedCustomText != null) {
-      setState(() => widget.items[_currentIndex] = editedCustomText);
+      setState(() => _items[_currentIndex] = editedCustomText);
     }
   }
 }

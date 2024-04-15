@@ -4,7 +4,7 @@ import 'package:zpevnik/components/filters/filters_row.dart';
 import 'package:zpevnik/components/navigation/scaffold.dart';
 import 'package:zpevnik/components/search/search_field.dart';
 import 'package:zpevnik/components/search/search_song_lyrics_list_view.dart';
-import 'package:zpevnik/components/selected_displayable_item_index.dart';
+import 'package:zpevnik/components/selected_displayable_item_arguments.dart';
 import 'package:zpevnik/components/split_view.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/providers/search.dart';

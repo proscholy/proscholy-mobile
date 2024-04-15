@@ -39,11 +39,11 @@ class DisplayScreenArguments {
   bool get canShowMenu => playlist != null || songbook != null || showSearchScreen;
 
   @override
-  int get hashCode => Object.hash(runtimeType, items, initialIndex);
+  int get hashCode => Object.hash(runtimeType, items.length, initialIndex);
 
   @override
   bool operator ==(Object other) {
-    return other is DisplayScreenArguments && initialIndex == other.initialIndex && items == other.items;
+    return other is DisplayScreenArguments && initialIndex == other.initialIndex && items.length == other.items.length;
   }
 }
 

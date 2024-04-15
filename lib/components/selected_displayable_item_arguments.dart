@@ -15,9 +15,11 @@ class SelectedDisplayableItemArguments extends InheritedWidget {
     return displayableItemArgumentsNotifier != oldWidget.displayableItemArgumentsNotifier;
   }
 
-  static ValueNotifier<DisplayScreenArguments>? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<SelectedDisplayableItemArguments>()
-        ?.displayableItemArgumentsNotifier;
+  static ValueNotifier<DisplayScreenArguments>? of(BuildContext context, {bool listen = true}) {
+    final widget = listen
+        ? context.dependOnInheritedWidgetOfExactType<SelectedDisplayableItemArguments>()
+        : context.getInheritedWidgetOfExactType<SelectedDisplayableItemArguments>();
+
+    return widget?.displayableItemArgumentsNotifier;
   }
 }

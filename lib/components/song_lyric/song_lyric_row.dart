@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/selected_displayable_item_index.dart';
+import 'package:zpevnik/components/selected_displayable_item_arguments.dart';
 import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/song_lyric.dart';
@@ -43,8 +43,7 @@ class SongLyricRow extends StatelessWidget {
       onTap: () => _pushSongLyric(context),
       child: SelectedRowHighlight(
         selectedObjectNotifier: SelectedDisplayableItemArguments.of(context),
-        object: isInsideTranslationSheet ? null : songLyric,
-        mapSelectedObject: (arguments) => arguments.items[arguments.initialIndex] as SongLyric,
+        object: isInsideTranslationSheet ? null : displayScreenArguments,
         child: Container(
           constraints: const BoxConstraints(minHeight: 40),
           child: Padding(

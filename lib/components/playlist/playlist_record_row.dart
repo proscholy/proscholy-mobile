@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zpevnik/components/highlightable.dart';
-import 'package:zpevnik/components/selected_displayable_item_index.dart';
+import 'package:zpevnik/components/selected_displayable_item_arguments.dart';
 import 'package:zpevnik/components/selected_row_highlight.dart';
 import 'package:zpevnik/constants.dart';
 import 'package:zpevnik/models/playlist_record.dart';

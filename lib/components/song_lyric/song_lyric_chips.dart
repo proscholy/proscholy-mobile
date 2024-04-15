@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:zpevnik/components/selected_displayable_item_index.dart';
+import 'package:zpevnik/components/selected_displayable_item_arguments.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_chip.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_files.dart';
 import 'package:zpevnik/components/song_lyric/song_lyric_tags.dart';
