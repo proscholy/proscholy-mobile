@@ -12,6 +12,7 @@ import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
 import 'package:zpevnik/providers/songbooks.dart';
+import 'package:zpevnik/providers/sort.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
 
@@ -25,7 +26,9 @@ class SearchSongLyricsListView extends ConsumerWidget {
     final songbookTags = ref.watch(selectedTagsByTypeProvider(TagType.songbook));
 
     final List<SongLyric> allSongLyrics;
-    if (songbookTags.length == 1 && ref.watch(searchTextProvider).isEmpty) {
+    if (songbookTags.length == 1 &&
+        ref.watch(searchTextProvider).isEmpty &&
+        ref.watch(sortProvider) == SortType.numeric) {
       final songbook = ref.watch(songbooksProvider).firstWhere((songbook) => songbook.name == songbookTags.first.name);
       songbook.records.sort();
 
