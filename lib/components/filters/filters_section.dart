@@ -13,22 +13,17 @@ class FiltersSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ExpansionTile(
+      title: Text(title, style: theme.textTheme.titleLarge),
+      shape: const Border(),
+      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+      tilePadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+      childrenPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
       children: [
-        ExpansionTile(
-          title: Text(title, style: theme.textTheme.titleLarge),
-          shape: const Border(),
-          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-          tilePadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-          childrenPadding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
-          children: [
-            Wrap(
-              spacing: kDefaultPadding / 2,
-              runSpacing: kDefaultPadding / 2,
-              children: tags.map((tag) => FilterTag(tag: tag)).toList(),
-            ),
-          ],
+        Wrap(
+          spacing: kDefaultPadding / 2,
+          runSpacing: kDefaultPadding / 2,
+          children: tags.map((tag) => FilterTag(tag: tag)).toList(),
         ),
       ],
     );

@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:zpevnik/models/model.dart';
 import 'package:zpevnik/models/objectbox.g.dart';
 import 'package:zpevnik/models/settings.dart';
 import 'package:zpevnik/models/song_lyric.dart';
 import 'package:zpevnik/providers/app_dependencies.dart';
+import 'package:zpevnik/providers/sort.dart';
 import 'package:zpevnik/providers/utils.dart';
 
 part 'song_lyrics.g.dart';
@@ -51,13 +54,21 @@ SongLyric? songLyric(SongLyricRef ref, int id) {
 
 @Riverpod(keepAlive: true)
 List<SongLyric> songLyrics(SongLyricsRef ref) {
-  final songLyrics = queryStore(ref, orderBy: SongLyric_.name);
+  final random = Random();
+  final songLyrics =
+      queryStore(ref, orderBy: SongLyric_.name).where((songLyric) => songLyric.shouldAppearToUser).toList();
 
-  return songLyrics.where((songLyric) => songLyric.shouldAppearToUser).toList();
+  return switch (ref.watch(sortProvider)) {
+    SortType.random => songLyrics..sort((_, __) => random.nextDouble().compareTo(random.nextDouble())),
+    SortType.alpha => songLyrics..sort((a, b) => a.name.compareTo(b.name)),
+    SortType.numeric => songLyrics..sort((a, b) => a.id.compareTo(b.id)),
+  };
 }
 
 @riverpod
 List<SongLyric> songsListSongLyrics(SongsListSongLyricsRef ref, SongsList songsList) {
+  songsList.records.sort();
+
   return [
     for (final record in songsList.records)
       if (record.songLyric.target != null) record.songLyric.target!

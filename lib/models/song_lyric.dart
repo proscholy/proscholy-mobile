@@ -16,6 +16,8 @@ part 'song_lyric.g.dart';
 
 final _bAccidentalsRE = RegExp(r'\[(B|S|.b|.s)\]');
 
+enum SortType { random, alpha, numeric }
+
 enum SongLyricType {
   original('Originál'),
   translation('Překlad'),

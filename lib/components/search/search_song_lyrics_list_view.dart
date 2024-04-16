@@ -11,6 +11,7 @@ import 'package:zpevnik/providers/playlists.dart';
 import 'package:zpevnik/providers/recent_items.dart';
 import 'package:zpevnik/providers/search.dart';
 import 'package:zpevnik/providers/song_lyrics.dart';
+import 'package:zpevnik/providers/songbooks.dart';
 import 'package:zpevnik/providers/tags.dart';
 import 'package:zpevnik/routing/arguments.dart';
 
@@ -21,7 +22,19 @@ class SearchSongLyricsListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final searchedSongLyricsResult = ref.watch(searchedSongLyricsProvider);
 
-    final songLyrics = filterSongLyrics(searchedSongLyricsResult.songLyrics ?? ref.watch(songLyricsProvider), ref);
+    final songbookTags = ref.watch(selectedTagsByTypeProvider(TagType.songbook));
+
+    final List<SongLyric> allSongLyrics;
+    if (songbookTags.length == 1 && ref.watch(searchTextProvider).isEmpty) {
+      final songbook = ref.watch(songbooksProvider).firstWhere((songbook) => songbook.name == songbookTags.first.name);
+      songbook.records.sort();
+
+      allSongLyrics = songbook.records.map((songbookRecord) => songbookRecord.songLyric.target!).toList();
+    } else {
+      allSongLyrics = ref.watch(songLyricsProvider);
+    }
+
+    final songLyrics = filterSongLyrics(searchedSongLyricsResult.songLyrics ?? allSongLyrics, ref);
     final matchedById = searchedSongLyricsResult.matchedById == null
         ? null
         : filterSongLyrics([searchedSongLyricsResult.matchedById!], ref).firstOrNull;
