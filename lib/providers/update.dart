@@ -77,8 +77,6 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   final client = Client();
   final appDependencies = ref.read(appDependenciesProvider);
 
-  ref.onDispose(client.dispose);
-
   // update news
   try {
     final newsItems =

@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 
 final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-final _url = Uri.https('zpevnik.proscholy.cz', 'graphql');
+final _link = HttpLink('https://zpevnik.proscholy.cz/graphql');
 
 const _newsQuery = '''
 query {
@@ -150,45 +149,35 @@ query {
 }''';
 
 class Client {
-  final http.Client client;
+  final GraphQLClient client;
 
-  Client() : client = http.Client();
+  Client() : client = GraphQLClient(link: _link, cache: GraphQLCache());
 
   Future<Map<String, dynamic>> getNews() async {
-    final body = {'query': _newsQuery};
+    final result = await client.query(QueryOptions(document: gql(_newsQuery)));
 
-    final response = await client.post(_url, body: body);
-
-    return jsonDecode(response.body)['data'];
+    return result.data!;
   }
 
   Future<Map<String, dynamic>> getData() async {
-    final body = {'query': _updateQuery};
+    final result = await client.query(QueryOptions(document: gql(_updateQuery)));
 
-    final response = await client.post(_url, body: body);
-
-    return jsonDecode(response.body)['data'];
+    return result.data!;
   }
 
   Future<Map<String, dynamic>> getSongLyrics(DateTime updatedAfter) async {
-    final body = {
-      'query': _songLyricsQuery.replaceFirst(_updatedAfterPlaceholder, '"${_dateFormat.format(updatedAfter)}"')
-    };
+    final result = await client.query(
+      QueryOptions(
+        document: gql(_songLyricsQuery.replaceFirst(_updatedAfterPlaceholder, '"${_dateFormat.format(updatedAfter)}"')),
+      ),
+    );
 
-    final response = await client.post(_url, body: body);
-
-    return jsonDecode(response.body)['data'];
+    return result.data!;
   }
 
   Future<Map<String, dynamic>> getSongLyric(int id) async {
-    final body = {'query': _songLyricQuery.replaceFirst(_idPlaceholder, '$id')};
+    final result = await client.query(QueryOptions(document: gql(_songLyricQuery.replaceFirst(_idPlaceholder, '$id'))));
 
-    final response = await client.post(_url, body: body);
-
-    return jsonDecode(response.body)['data']['song_lyric'];
-  }
-
-  void dispose() {
-    client.close();
+    return result.data!;
   }
 }
