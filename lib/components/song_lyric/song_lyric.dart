@@ -237,14 +237,24 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
   }) {
     final List<InlineSpan> children = [];
 
+    final hideChords = ref.watch(
+        songLyricSettingsProvider(widget.songLyric.id).select((songLyricSettings) => !songLyricSettings.showChords));
+
     Token? currentToken = token;
     Chord? currentChord;
     while (currentToken != null && currentToken is! NewLine) {
       if (currentToken is VersePart) {
-        if (currentChord == null ||
-            ref.watch(songLyricSettingsProvider(widget.songLyric.id)
-                .select((songLyricSettings) => !songLyricSettings.showChords))) {
-          children.add(WidgetSpan(child: Text(currentToken.value, style: textStyle)));
+        if (currentChord == null || hideChords) {
+          String text = currentToken.value;
+
+          // merge followed `VersePart`s if not showing chords for better looks
+          while (controller.parser.peekToken is VersePart || (hideChords && controller.parser.peekToken is Chord)) {
+            currentToken = controller.parser.nextToken;
+
+            if (currentToken is VersePart) text += currentToken.value;
+          }
+
+          children.add(WidgetSpan(child: Text(text, style: textStyle)));
         } else {
           children.add(_buildChord(context, currentChord, textStyle, versePart: currentToken));
           currentChord = null;

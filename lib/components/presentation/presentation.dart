@@ -63,22 +63,18 @@ class Presentation extends StatelessWidget {
                 bottom: (onExternalDisplay ? 1 : 8) * textScaleFactor * kDefaultPadding,
               ),
               child: presentationData.isCustomText
-                  ? QuillProvider(
-                      configurations: QuillConfigurations(
+                  ? QuillEditor.basic(
+                      configurations: QuillEditorConfigurations(
+                        padding: const EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                         controller: QuillController(
                           document: _deserializeMarkdownToDocument(presentingText),
                           selection: const TextSelection.collapsed(offset: 0),
-                        ),
-                      ),
-                      child: QuillEditor.basic(
-                        configurations: const QuillEditorConfigurations(
-                          padding: EdgeInsets.symmetric(horizontal: 2 * kDefaultPadding),
                           readOnly: true,
-                          scrollable: false,
-                          autoFocus: false,
-                          expands: false,
-                          showCursor: false,
                         ),
+                        scrollable: false,
+                        autoFocus: false,
+                        expands: false,
+                        showCursor: false,
                       ),
                     )
                   : Padding(

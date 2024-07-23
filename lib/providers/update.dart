@@ -22,7 +22,7 @@ part 'update.g.dart';
 const _versionKey = 'current_version';
 
 const _lastUpdateKey = 'last_update';
-const _initialLastUpdate = '2024-04-15 15:00:00';
+const _initialLastUpdate = '2024-07-23 13:00:00';
 
 const _updatePeriod = Duration(hours: 1);
 
@@ -43,6 +43,8 @@ class Updated extends UpdateStatus {
 }
 
 Future<void> loadInitial(AppDependencies appDependencies) async {
+  _cleanup(appDependencies);
+
   final lastVersion = appDependencies.sharedPreferences.getString(_versionKey);
   final currentVersion = '${appDependencies.packageInfo.version}+${appDependencies.packageInfo.buildNumber}';
 
@@ -145,6 +147,16 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
 
   final updatedSongLyrics = await storeSongLyrics(appDependencies.store, songLyrics);
 
+  _cleanup(appDependencies);
+
+  SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
+
+  yield Updated(updatedSongLyrics);
+
+  appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
+}
+
+void _cleanup(AppDependencies appDependencies) {
   // remove externals that were associated with removed song lyrics
   _removeRelations(appDependencies.store, External_.songLyric.equals(0));
 
@@ -159,12 +171,6 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
         .and(PlaylistRecord_.bibleVerse.equals(0))
         .and(PlaylistRecord_.customText.equals(0)),
   );
-
-  SearchedSongLyrics.update(appDependencies.ftsDatabase, updatedSongLyrics);
-
-  yield Updated(updatedSongLyrics);
-
-  appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
 }
 
 void _removeRelations<T>(Store store, Condition<T> condition) {

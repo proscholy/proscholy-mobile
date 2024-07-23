@@ -15,7 +15,7 @@ import 'package:zpevnik/providers/utils.dart';
 part 'search.freezed.dart';
 part 'search.g.dart';
 
-final _numberRE = RegExp(r'[1-9]\d*');
+final _numberRE = RegExp(r'[1-9]\d*[A-Z]?');
 
 // [name, secondary_name_1, secondary_name_2, lyrics, authors]
 const _searchResultsWeights = [40.0, 35.0, 30.0, 1.0, 2.0];
@@ -88,11 +88,11 @@ class SearchedSongLyrics extends _$SearchedSongLyrics {
     if (searchedNumber == null) {
       searchText = '${searchText.replaceAll(' ', '* ')}*';
     } else {
-      matchedById = songLyricBox.get(int.parse(searchedNumber));
+      if (int.tryParse(searchedNumber) != null) matchedById = songLyricBox.get(int.tryParse(searchedNumber)!);
 
       if (matchedById != null) matchedIds.add(matchedById.id);
 
-      final songbookRecords = queryStore(ref, condition: SongbookRecord_.number.equals(searchedNumber));
+      final songbookRecords = queryStore(ref, condition: SongbookRecord_.number.equals(searchText));
       songbookRecords.sort((a, b) => a.songbook.target!.compareTo(b.songbook.target!));
 
       for (final songbookRecord in songbookRecords) {

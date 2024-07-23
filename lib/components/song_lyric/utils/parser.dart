@@ -322,6 +322,8 @@ class SongLyricsParser {
 
   int _currentTokenIndex = 0;
 
+  Token? get peekToken => _parsedSongLyrics?[_currentTokenIndex];
+
   Token? get nextToken {
     _parsedSongLyrics ??= _FilledTokensBuilder()._fillSubstitutes(_parseTokens());
 
