@@ -35,7 +35,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
   late StreamSubscription<Query<PlaylistRecord>> _playlistChangesSubscription;
 
   // it is not possible to sort relations yet, so sort it here when displaying
-  late List<PlaylistRecord> _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank));
+  late List<PlaylistRecord> _recordsOrdered = _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
         .query(PlaylistRecord_.playlist.equals(widget.playlist.id))
         .watch()
         .listen((_) {
-      setState(() => _recordsOrdered = widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank)));
+      setState(() => _recordsOrdered = _filterInvalidRecords(widget.playlist.records.sorted((a, b) => a.rank.compareTo(b.rank))));
 
       final selectedDisplayableItemArgumentsNotifier = SelectedDisplayableItemArguments.of(context, listen: false);
 
@@ -131,6 +131,20 @@ class _PlaylistRecordsListViewState extends ConsumerState<PlaylistRecordsListVie
       ),
       onReorder: _reorder,
     );
+  }
+
+  // TODO: temporary fix, so there are playlist records can't fail during _unwrapPlaylistRecord
+  List<PlaylistRecord> _filterInvalidRecords(List<PlaylistRecord> playlistRecords) {
+    return playlistRecords.where((playlistRecord) {
+      final bibleVerse =
+          ref.watch(bibleVerseProvider(playlistRecord.bibleVerse.targetId));
+      final customText =
+          ref.watch(customTextProvider(playlistRecord.customText.targetId));
+      final songLyric =
+          ref.watch(songLyricProvider(playlistRecord.songLyric.targetId));
+
+      return bibleVerse != null || customText != null || songLyric != null;
+    }).toList();
   }
 
   DisplayableItem _unwrapPlaylistRecord(PlaylistRecord playlistRecord) {
