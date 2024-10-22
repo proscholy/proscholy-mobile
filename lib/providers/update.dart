@@ -124,6 +124,11 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
 
+  _removeRelations(
+    appDependencies.store,
+    PlaylistRecord_.songLyric.oneOf(existingSongLyricsIds.toList()),
+  );
+
   // on iOS also remove them from spotlight indexing
   SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
 
@@ -156,6 +161,7 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   appDependencies.sharedPreferences.setString(_lastUpdateKey, _dateFormat.format(now));
 }
 
+// FIXME: does not seem to work correctly? try removing based on song_lyric ids
 void _cleanup(AppDependencies appDependencies) {
   // remove externals that were associated with removed song lyrics
   _removeRelations(appDependencies.store, External_.songLyric.equals(0));
