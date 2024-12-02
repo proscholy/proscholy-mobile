@@ -124,11 +124,6 @@ Stream<UpdateStatus> update(UpdateRef ref) async* {
   // remove song lyrics that were removed on server
   box.removeMany(existingSongLyricsIds.toList());
 
-  _removeRelations(
-    appDependencies.store,
-    PlaylistRecord_.songLyric.oneOf(existingSongLyricsIds.toList()),
-  );
-
   // on iOS also remove them from spotlight indexing
   SpotlightService.instance.deindexItems(existingSongLyricsIds.map((id) => 'song_lyric_$id').toList());
 
