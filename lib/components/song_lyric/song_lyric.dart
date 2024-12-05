@@ -141,7 +141,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       } else if (currentToken is VerseNumber) {
         children.add(_buildVerse(context, currentToken, presentationPart));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) * 3));
       } else if (currentToken is PresentationBreakpoint) {
         _presentationPartGlobalKeysMap.putIfAbsent(currentToken.part, () => GlobalKey());
         presentationPart = currentToken.part;
@@ -164,7 +164,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
           _buildLine(context, currentToken, _textStyle(context, false), isInterlude: true),
         );
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) * 3));
       }
 
       currentToken = controller.parser.nextToken;
@@ -200,7 +200,7 @@ class _SongLyricWidgetState extends ConsumerState<SongLyricWidget> {
       } else if (currentToken is Comment) {
         children.add(_buildComment(context, currentToken, number.verseHasChord));
       } else if (currentToken is NewLine) {
-        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) / 2));
+        children.add(SizedBox(height: kDefaultPadding * MediaQuery.textScaleFactorOf(context) * 3));
       } else if (currentToken is PresentationBreakpoint) {
         _presentationPartGlobalKeysMap.putIfAbsent(currentToken.part, () => GlobalKey());
         presentationPart = currentToken.part;
